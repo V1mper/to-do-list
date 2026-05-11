@@ -31,9 +31,9 @@ class TaskResponse(BaseModel):
 
 @router.get("", response_model=List[TaskResponse])
 def get_tasks(
-    filter: str = Query("all", regex="^(all|active|done)$"),
+    filter: str = Query("all", pattern="^(all|active|done)$"),
     search: Optional[str] = None,
-    sort: str = Query("due_date", regex="^(due_date|created_at|title)$"),
+    sort: str = Query("due_date", pattern="^(due_date|created_at|title)$"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
