@@ -48,11 +48,13 @@ Authorization: Bearer &lt;jwt_token&gt;
 
 **Cтек:**
 
-| Компонент | Выбор | Причина |
+| Слой | Выбор | Обоснование |
 | --- | --- | --- |
-| Backend | Python + FastAPI | Быстрый, асинхронный, лёгкий для старта |
-| Database | SQLite (dev) / PostgreSQL (prod) | SQLite — без настройки, Postgres — для деплоя |
-| Auth | JWT (python-jose) | Стандарт, без сессий на сервере |
-| Frontend | React + Axios (или vanilla JS) | По уровню команды |
-| Dependencies | pip + venv | Классика Python |
-| Deployment | Railway / Render | Бесплатный хостинг с CI |
+| Язык | Python 3.11 | Требование проекта, отличная производительность |
+| Фреймворк | FastAPI | Автоматическая документация, асинхронность, валидация через Pydantic |
+| База данных | PostgreSQL 15 | Надёжная реляционная СУБД, поддержка ENUM |
+| ORM | SQLAlchemy 2.0 (async) | Зрелая экосистема, асинхронные сессии |
+| Миграции | Alembic | Стандарт для SQLAlchemy |
+| Аутентификация | JWT (PyJWT + passlib) | Безопасно, stateless |
+| Контейнеризация | Docker + docker-compose | Упрощает развёртывание |
+| CI/CD | GitHub Actions | Линтеры (flake8, black), тесты (pytest), проверка типов (mypy) |
