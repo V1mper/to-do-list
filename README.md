@@ -1,19 +1,20 @@
 # To-Do List App
 
-## Описание
-Минималистичный менеджер задач с аутентификацией.
+Минималистичный веб-менеджер задач с аутентификацией, фильтрацией и поиском.
 
 ## Функционал
 - Регистрация / вход (JWT)
-- CRUD задач
+- Создание, редактирование, удаление задач
 - Отметка о выполнении
 - Фильтрация: все / активные / выполненные
 - Поиск по заголовку
+- Прогресс-бар выполнения
+- Адаптивный дизайн
 
 ## Технологии
-- Backend: FastAPI, SQLAlchemy, SQLite
-- Auth: JWT (python-jose, passlib)
-- Frontend: HTML + CSS + JS (или React)
+- Backend: FastAPI, SQLAlchemy, PostgreSQL/SQLite
+- Frontend: HTML5, CSS3, Vanilla JS
+- Auth: JWT (bcrypt)
 
 ## API Эндпоинты
 | Метод | Эндпоинт | Описание |
@@ -25,14 +26,23 @@
 | PUT | /api/tasks/{id} | Обновить |
 | DELETE | /api/tasks/{id} | Удалить |
 
-## Запуск локально
+## Запуск
+
+### Локально (разработка)
 ```bash
-git clone <repo>
-cd todo-backend
+# Backend
+cd backend
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-uvicorn main:app --reload
+uvicorn main:app --reload --port 8000
 ```
+
+# Frontend (отдельный сервер)
+```bash
+cd frontend
+python -m http.server 3000
+```
+
 ## Макеты
 В процессе разработки, ищите в репозитории

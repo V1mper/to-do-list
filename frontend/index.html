@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1>📝 Мои задачи</h1>
+            <button id="logoutBtn" class="logout-btn">Выйти</button>
+        </header>
+
+        <div class="search-section">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Поиск по задачам...">
+                <button id="clearSearch" class="clear-search hidden">✕</button>
+            </div>
+        </div>
+
+        <div class="filters">
+            <button data-filter="all" class="filter-btn active">Все</button>
+            <button data-filter="active" class="filter-btn">Активные</button>
+            <button data-filter="done" class="filter-btn">Выполненные</button>
+        </div>
+
+        <div class="stats">
+            <div class="stats-text">
+                <span id="doneCount">0</span> / <span id="totalCount">0</span> выполнено
+            </div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="task-list" id="taskList">
+            <div class="loading">Загрузка...</div>
+        </div>
+
+        <button id="addTaskBtn" class="fab">+</button>
+    </div>
+
+    <!-- Модалка создания/редактирования -->
+    <div id="taskModal" class="modal hidden">
+        <div class="modal-content">
+            <h3 id="modalTitle">Новая задача</h3>
+            <form id="taskForm">
+                <input type="text" id="taskTitle" placeholder="Заголовок *" required>
+                <textarea id="taskDesc" placeholder="Описание (опционально)" rows="3"></textarea>
+                <input type="date" id="taskDueDate">
+                <div class="modal-buttons">
+                    <button type="button" id="cancelModalBtn">Отмена</button>
+                    <button type="submit">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
