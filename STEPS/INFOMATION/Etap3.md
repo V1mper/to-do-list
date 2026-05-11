@@ -21,6 +21,57 @@
 - Невалидная дата → ошибка 400
 - Нет токена или истёк → ошибка 401, перенаправление на логин
 
+### User Flow (блок-схема)
+![alt text](image.png)
+
+
+### ER-диаграмма базы данных
+
+Схема базы данных (SQLite):
+
+```sql
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    due_date DATE,
+    is_done BOOLEAN DEFAULT 0,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+```
+
+Графическое представление в нотации Crow's Foot:
+
+```mermaid
+erDiagram
+    users {
+        INTEGER id PK "AUTOINCREMENT"
+        TEXT email UK "NOT NULL"
+        TEXT password_hash "NOT NULL"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    tasks {
+        INTEGER id PK "AUTOINCREMENT"
+        TEXT title "NOT NULL"
+        TEXT description
+        DATE due_date
+        BOOLEAN is_done "DEFAULT 0"
+        INTEGER user_id FK "NOT NULL"
+        TIMESTAMP created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    users ||--o{ tasks : "user_id (ON DELETE CASCADE)"
+```
 ### Основные эндпоинты API (BE)
 
 | Метод | Эндпоинт | Тело запроса | Ответ | Описание |
