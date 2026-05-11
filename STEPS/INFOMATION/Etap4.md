@@ -3,19 +3,19 @@
 
 **1.Экран входа**
 
-![alt text](image-1.png)
+![alt text](../GRAFIKI/image-1.png)
 
 **2. Экран регистрации**
 
-![alt text](image-2.png)
+![alt text](../GRAFIKI/image-2.png)
 
 **3. Главный экран (список задач)**
 
-![alt text](image-3.png)
+![alt text](../GRAFIKI/image-3.png)
 
 **4.Форма создания/редактирования задачи**
 
-![alt text](image-4.png)
+![alt text](../GRAFIKI/image-4.png)
 
 ### Проверка бизнес-шагов (СА)
 
