@@ -21,44 +21,6 @@
 - Невалидная дата → ошибка 400
 - Нет токена или истёк → ошибка 401, перенаправление на логин
 
-**ER-диаграмма (BE)**
-
-**SQL (схема):**
-
-sql
-
-CREATE TABLE users (
-
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-email TEXT UNIQUE NOT NULL,
-
-password_hash TEXT NOT NULL,
-
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-
-);
-
-CREATE TABLE tasks (
-
-id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-title TEXT NOT NULL,
-
-description TEXT,
-
-due_date DATE,
-
-is_done BOOLEAN DEFAULT 0,
-
-user_id INTEGER NOT NULL,
-
-created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-
-);
-
 **Основные эндпоинты API (BE)**
 
 | Метод | Эндпоинт | Тело запроса | Ответ | Описание |
