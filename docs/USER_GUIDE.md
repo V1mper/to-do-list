@@ -1,9 +1,3 @@
-
----
-
-### `docs/USER_GUIDE.md`
-
-```markdown
 # Руководство пользователя To-Do List
 
 ## Как начать
