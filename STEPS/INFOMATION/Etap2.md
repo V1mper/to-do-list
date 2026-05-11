@@ -107,7 +107,7 @@ class Task(Base):
 
     project = relationship("Project", back_populates="tasks")
     owner = relationship("User", back_populates="tasks")
-
+```
     Индексы
     Таблица,Поле,Тип индекса
 users,email,UNIQUE INDEX
@@ -134,4 +134,44 @@ Project → Task,1 ко многим,SET NULL
 Технологии,FastAPI + SQLAlchemy + PostgreSQL
 Тестирование,Pytest (входит в оценку)
 Что НЕ входит в MVP,"Почтовые уведомления, WebSocket, real-time"
+
 Технологический стек
+Компонент,Технология
+Язык,Python 3.11
+Веб-фреймворк,FastAPI
+ORM,SQLAlchemy 2.0 (async)
+База данных,PostgreSQL
+Миграции,Alembic
+Аутентификация,PyJWT + passlib[bcrypt]
+Валидация,Pydantic
+Тестирование,Pytest + httpx
+
+4. Team Lead / DevOps (Болдырев) — Бэклог задач и User Story Mapping
+4.1. User Story Mapping
+Шаг 1: Регистрация / Вход
+Шаг 2: Просмотр задач
+Шаг 3: Управление задачами
+Шаг 4: Управление проектами
+Шаг 5: Будущие версии (НЕ в MVP)
+4.2. Бэклог задач (Sprint 1)
+Инструмент: Trello / Jira / Notion
+Ссылка на доску: [вставить ссылку]
+Колонки:
+
+Backlog
+Sprint Backlog (To Do)
+In Progress
+Review
+Done ✅
+
+Эпик 1: Инициализация проекта
+Эпик 2: Аутентификация
+Эпик 3: CRUD задач
+Эпик 4: Проекты
+Эпик 5: API документация
+Эпик 6: CI/CD
+Сводка по трудозатратам
+Приоритет,Суммарная оценка
+Must,28 часов
+Should,11 часов
+Итого,~39 часов
