@@ -1,7 +1,6 @@
-### Гайдлайны (UX)
 # Дизайн-система To-Do List
 
-## Цвета
+### Цвета
 - Основной фон: #F9FAFB (светло-серый)
 - Карточки задач: #FFFFFF
 - Основной текст: #111827
@@ -9,33 +8,40 @@
 - Акцент (кнопки, чекбоксы): #3B82F6 (синий)
 - Успех (выполнено): #10B981 (зелёный)
 
-## Шрифты
+### Шрифты
 - Семейство: Inter, system-ui, sans-serif
 - Заголовки: 24px, 600
 - Задачи: 16px, 400
 - Мелкий текст (даты): 12px, 400
 
-## Отступы
+### Отступы
 - Отступы между задачами: 12px
 - Внутренние отступы карточки: 16px
 - Отступы по краям экрана: 20px
 
-## Состояния
+### Состояния
 - Чекбокс невыполненной: пустой круг
 - Чекбокс выполненной: круг с галочкой, текст зачёркнут
 - Hover на задаче: лёгкая тень
-Локальный сервер, миграции, Postman (BE)
-Запуск сервера:
+
+## Локальный сервер, миграции, Postman (BE)
+**Запуск сервера:**
+```python
 bash
 cd todo-backend
 uvicorn main:app --reload --port 8000
-Миграции (Alembic):
+```
+
+### Миграции (Alembic):
+```python
 bash
 alembic init migrations
-# настройка alembic.ini
+# Настройка alembic.ini
 alembic revision --autogenerate -m "initial"
 alembic upgrade head
-Postman коллекция (экспорт):
+```
+### Postman коллекция (экспорт):
+```python
 json
 {
   "collection": {
@@ -50,8 +56,10 @@ json
     ]
   }
 }
-CI настройка (TL)
-Файл .github/workflows/ci.yml:
+```
+## CI настройка (TL)
+**Файл** .github/workflows/ci.yml:
+```python
 yaml
 name: CI
 on: [push, pull_request]
@@ -66,8 +74,11 @@ jobs:
       - run: pip install ruff pytest
       - run: ruff check .
       - run: pytest tests/
-Линтер (ruff) и автоформат (black):
+```
+### Линтер (ruff) и автоформат (black):
+```python
 bash
 pip install ruff black
 ruff check --fix .
 black .
+```
