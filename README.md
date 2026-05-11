@@ -1,24 +1,38 @@
-# To-Do Трекер (Python)
+# To-Do List App
 
 ## Описание
-Веб-приложение для управления задачами, написанное на FastAPI.
+Минималистичный менеджер задач с аутентификацией.
 
-## Стек
-- Backend: Python 3.11, FastAPI, SQLAlchemy 2.0, Alembic
-- База данных: PostgreSQL
-- Аутентификация: JWT (PyJWT + passlib[bcrypt])
-- Frontend: React (или статика)
+## Функционал
+- Регистрация / вход (JWT)
+- CRUD задач
+- Отметка о выполнении
+- Фильтрация: все / активные / выполненные
+- Поиск по заголовку
 
-## Функциональные требования
-См. /docs/requirements.md
+## Технологии
+- Backend: FastAPI, SQLAlchemy, SQLite
+- Auth: JWT (python-jose, passlib)
+- Frontend: HTML + CSS + JS (или React)
 
+## API Эндпоинты
+| Метод | Эндпоинт | Описание |
+|-------|----------|----------|
+| POST | /api/register | Регистрация |
+| POST | /api/login | Вход |
+| GET | /api/tasks | Список задач |
+| POST | /api/tasks | Создать |
+| PUT | /api/tasks/{id} | Обновить |
+| DELETE | /api/tasks/{id} | Удалить |
+
+## Запуск локально
+```bash
+git clone <repo>
+cd todo-backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
 ## Макеты
-[Ссылка на Figma]
-
-## API
-Документация доступна после запуска по /docs (Swagger) или /redoc.
-
-## Запуск
-1. Клонировать репозиторий
-   ```bash
-   git clone ...
+В процессе разработки, ищите в репозитории
