@@ -40,12 +40,222 @@
 | **Trello** | Карточки с обложками, drag-and-drop между колонками (если делать канбан). | Не берём канбан в первом релизе, но используем идею цветовых меток проектов. |
 | **Notion** | Гибкие представления: список, доска, календарь. | Оставляем только списочное представление на MVP, с возможностью будущего расширения. |
 
-**3\. Backend-разработчик (Плеханов) – Набросок структуры БД и техническая реализуемость**
+# 🗄️ 3. Backend-разработчик (Плеханов) — Набросок структуры БД и техническая реализуемость
 
-User (id, email, password_hash, created_at)
+---
 
-Project (id, name, user_id(FK), created_at)
+## 3.1. Детальный набросок сущностей БД
 
-Task (id, title, description, due_date, priority(enum), status(enum), project_id(FK, nullable), user_id(FK), created_at, updated_at)
+| Параметр | Значение |
+|----------|----------|
+| **СУБД** | PostgreSQL |
+| **ORM** | SQLAlchemy 2.0 (асинхронный режим) |
+| **Миграции** | Alembic |
 
-Пока минимально – без хранения уведомлений, историю изменений и т.п.
+Ниже приведён код будущих моделей, который одновременно служит проектом схемы данных.
+
+### 📁 Файл `app/models.py`
+
+```python
+import enum
+from sqlalchemy import Column, Integer, String, DateTime, Enum, ForeignKey, Text
+from sqlalchemy.orm import relationship
+from datetime import datetime
+
+
+class PriorityEnum(str, enum.Enum):
+    low = "low"
+    medium = "medium"
+    high = "high"
+
+
+class TaskStatus(str, enum.Enum):
+    active = "active"
+    completed = "completed"
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, nullable=False, index=True)
+    hashed_password = Column(String(255), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    projects = relationship("Project", back_populates="owner")
+    tasks = relationship("Task", back_populates="owner")
+
+
+class Project(Base):
+    __tablename__ = "projects"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    owner = relationship("User", back_populates="projects")
+    tasks = relationship("Task", back_populates="project")
+
+
+class Task(Base):
+    __tablename__ = "tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=True)
+    due_date = Column(DateTime, nullable=True)
+    priority = Column(Enum(PriorityEnum), default=PriorityEnum.medium, nullable=False)
+    status = Column(Enum(TaskStatus), default=TaskStatus.active, nullable=False)
+    project_id = Column(Integer, ForeignKey("projects.id", ondelete="SET NULL"), nullable=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    project = relationship("Project", back_populates="tasks")
+    owner = relationship("User", back_populates="tasks")
+🔍 Индексы
+Таблица	Поле	Тип индекса
+users	email	UNIQUE INDEX
+tasks	user_id	INDEX
+tasks	project_id	INDEX
+tasks	status	INDEX
+tasks	priority	INDEX
+🔗 Связи между таблицами
+text
+┌──────────┐        ┌──────────────┐        ┌──────────┐
+│   User   │ 1 ─── * │   Project    │        │   Task   │
+│          │         │              │ 1 ─── * │          │
+│          │ 1 ─── * └──────────────┘        │          │
+└──────────┘                                 └──────────┘
+Связь	Тип	Поведение при удалении
+User → Project	1 ко многим	Каскадное удаление (CASCADE)
+User → Task	1 ко многим	Каскадное удаление (CASCADE)
+Project → Task	1 ко многим	Установка NULL (SET NULL)
+Важно: При удалении проекта связанные задачи не удаляются — поле project_id становится NULL.
+
+3.2. Техническая реализуемость за семестр
+Критерий	Оценка
+Объём работ	~15–20 часов backend-разработки
+Основные операции	CRUD задач и проектов, аутентификация (JWT)
+Технологии	FastAPI + SQLAlchemy + PostgreSQL
+Тестирование	Pytest (входит в оценку)
+Что НЕ входит в MVP	Почтовые уведомления, WebSocket, real-time обновления
+Риски	Минимальные — все компоненты стандартны и хорошо документированы
+🐍 Технологический стек (Python)
+Компонент	Технология
+Язык	Python 3.11
+Веб-фреймворк	FastAPI
+ORM	SQLAlchemy 2.0 (async)
+База данных	PostgreSQL
+Миграции	Alembic
+Аутентификация	PyJWT + passlib[bcrypt]
+Валидация	Pydantic
+Тестирование	Pytest + httpx
+Контейнеризация	Docker (опционально)
+Вывод: Проект полностью реализуем в рамках одного семестра. Все используемые технологии стабильны, широко распространены и не требуют длительного изучения.
+
+📋 4. Team Lead / DevOps (Болдырев) — Бэклог задач и User Story Mapping
+4.1. User Story Mapping (карта пользовательских сценариев)
+Карта построена по горизонтали — основные шаги пользователя, по вертикали — детализация.
+
+🧭 Шаг 1: Регистрация / Вход
+Регистрация по email и паролю
+
+Вход в существующий аккаунт
+
+Восстановление пароля (только заглушка)
+
+Выход из системы
+
+📋 Шаг 2: Просмотр задач
+Отображение списка задач
+
+Фильтрация по статусу (активные / завершённые)
+
+Фильтрация по проекту
+
+Фильтрация по приоритету
+
+Быстрое переключение статуса (чекбокс)
+
+✏️ Шаг 3: Управление задачами
+Создание новой задачи (все поля)
+
+Редактирование задачи
+
+Удаление задачи
+
+Отметка о выполнении
+
+📁 Шаг 4: Управление проектами
+Создать проект
+
+Редактировать название проекта
+
+Удалить проект (задачи сохраняются)
+
+Назначить задачу проекту
+
+🚀 Шаг 5: Будущие версии (НЕ в MVP)
+Напоминания о дедлайнах
+
+Drag-and-drop изменение порядка задач
+
+Совместный доступ к проекту
+
+Эта карта ляжет в основу структуры бэклога: каждый шаг → эпик, каждая подзадача → элемент бэклога.
+
+4.2. 📊 Бэклог задач
+Доска: «Todo Tracker — Sprint 1»
+Инструмент: Trello / Jira / Notion
+Ссылка на доску: [вставить ссылку]
+
+📌 Колонки
+Колонка	Назначение
+Backlog	Приоритизированные задачи
+Sprint Backlog (To Do)	Задачи текущего спринта
+In Progress	В работе
+Review	На проверке
+Done	Готово ✅
+⚡ Эпик 1: Инициализация проекта
+Задача	Приоритет	Оценка
+Настройка репозитория, .gitignore, структура папок	Must	1 ч
+Установка зависимостей (FastAPI, SQLAlchemy, Alembic)	Must	1 ч
+Настройка Alembic и первой миграции (пустая БД)	Must	2 ч
+🔐 Эпик 2: Аутентификация
+Задача	Приоритет	Оценка
+Модель User и миграция	Must	1 ч
+Регистрация (хэш пароля, сохранение в БД)	Must	3 ч
+Логин (выдача JWT)	Must	2 ч
+Middleware проверки JWT	Must	2 ч
+Тесты на auth эндпоинты	Should	2 ч
+✅ Эпик 3: CRUD задач
+Задача	Приоритет	Оценка
+Модель Task и миграция	Must	1 ч
+Создание задачи	Must	2 ч
+Получение списка задач с базовой фильтрацией	Must	3 ч
+Редактирование задачи	Must	2 ч
+Удаление задачи	Should	1 ч
+Тесты	Should	3 ч
+📁 Эпик 4: Проекты
+Задача	Приоритет	Оценка
+Модель Project и миграция	Must	1 ч
+CRUD проектов	Must	3 ч
+Привязка задачи к проекту	Must	1 ч
+Фильтрация задач по проекту	Must	1 ч
+📖 Эпик 5: API документация и Postman
+Задача	Приоритет	Оценка
+Swagger (автоматически) — проверить все роуты	Must	1 ч
+Коллекция Postman с примерами запросов	Should	2 ч
+⚙️ Эпик 6: CI/CD
+Задача	Приоритет	Оценка
+GitHub Actions: линтеры, тесты	Should	3 ч
+Настройка flake8, black	Should	1 ч
+📈 Сводка по трудозатратам
+Приоритет	Суммарная оценка
+Must	28 часов
+Should	11 часов
+Итого	~39 часов
+Дата создания: 11.05.2026
+Команда: Болдырев, Бондаренко, Провоторова, Плеханов
