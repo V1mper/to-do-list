@@ -125,6 +125,7 @@ if (window.location.pathname.includes('index.html') || window.location.pathname 
     const taskForm = document.getElementById('taskForm');
     const modalTitle = document.getElementById('modalTitle');
     const cancelModalBtn = document.getElementById('cancelModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const searchInput = document.getElementById('searchInput');
     const clearSearch = document.getElementById('clearSearch');
@@ -237,64 +238,68 @@ if (window.location.pathname.includes('index.html') || window.location.pathname 
         }
     }
 
-    function openEditModal(task = null) {
-    if (task) {
-        currentEditTaskId = task.id;
-        modalTitle.textContent = 'Редактировать задачу';
-        document.getElementById('taskTitle').value = task.title;
-        document.getElementById('taskDesc').value = task.description || '';
-        document.getElementById('taskDueDate').value = task.due_date || '';
-    } else {
-        currentEditTaskId = null;
-        modalTitle.textContent = 'Новая задача';
+    function closeTaskModal() {
+        modal.classList.add('hidden');
         taskForm.reset();
-    }
-    modal.classList.remove('hidden');  // Убираем hidden — показываем
-}
-
-async function saveTask(event) {
-    event.preventDefault();
-    const title = document.getElementById('taskTitle').value.trim();
-    if (!title) {
-        alert('Заголовок обязателен');
-        return;
+        currentEditTaskId = null;
     }
 
-    const taskData = {
-        title: title,
-        description: document.getElementById('taskDesc').value || null,
-        due_date: document.getElementById('taskDueDate').value || null
-    };
-
-    try {
-        let response;
-        if (currentEditTaskId) {
-            response = await apiRequest(`/tasks/${currentEditTaskId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(taskData)
-            });
+    function openEditModal(task = null) {
+        if (task) {
+            currentEditTaskId = task.id;
+            modalTitle.textContent = 'Редактировать задачу';
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDesc').value = task.description || '';
+            document.getElementById('taskDueDate').value = task.due_date || '';
         } else {
-            response = await apiRequest('/tasks', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(taskData)
-            });
+            currentEditTaskId = null;
+            modalTitle.textContent = 'Новая задача';
+            taskForm.reset();
+        }
+        modal.classList.remove('hidden');
+    }
+
+    async function saveTask(event) {
+        event.preventDefault();
+        const title = document.getElementById('taskTitle').value.trim();
+        if (!title) {
+            alert('Заголовок обязателен');
+            return;
         }
 
-        if (response && response.ok) {
-            modal.classList.add('hidden');       // Скрываем модалку
-            taskForm.reset();                    // Очищаем форму
-            currentEditTaskId = null;            // Сбрасываем ID редактирования
-            loadTasks();                         // Обновляем список задач
-        } else if (response) {
-            const err = await response.json();
-            alert(err.detail || 'Ошибка сохранения');
+        const taskData = {
+            title: title,
+            description: document.getElementById('taskDesc').value || null,
+            due_date: document.getElementById('taskDueDate').value || null
+        };
+
+        try {
+            let response;
+            if (currentEditTaskId) {
+                response = await apiRequest(`/tasks/${currentEditTaskId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(taskData)
+                });
+            } else {
+                response = await apiRequest('/tasks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(taskData)
+                });
+            }
+
+            if (response && response.ok) {
+                closeTaskModal();
+                loadTasks();
+            } else if (response) {
+                const err = await response.json();
+                alert(err.detail || 'Ошибка сохранения');
+            }
+        } catch (err) {
+            alert('Ошибка соединения');
         }
-    } catch (err) {
-        alert('Ошибка соединения');
     }
-}
 
     function escapeHtml(str) {
         if (!str) return '';
@@ -341,21 +346,17 @@ async function saveTask(event) {
         loadTasks();
     });
 
-// Закрытие по кнопке "Отмена"
-cancelModalBtn.addEventListener('click', () => {
-    modal.classList.add('hidden');
-    taskForm.reset();
-    currentEditTaskId = null;
-});
+    addBtn.addEventListener('click', () => openEditModal(null));
+    taskForm.addEventListener('submit', (e) => saveTask(e));
 
-// Закрытие при клике на фон
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        modal.classList.add('hidden');
-        taskForm.reset();
-        currentEditTaskId = null;
-    }
-});
+    cancelModalBtn.addEventListener('click', () => closeTaskModal());
+    closeModalBtn.addEventListener('click', () => closeTaskModal());
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeTaskModal();
+        }
+    });
 
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('token');

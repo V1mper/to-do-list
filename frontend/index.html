@@ -45,8 +45,11 @@
 
     <!-- Модалка создания/редактирования -->
    <div id="taskModal" class="modal hidden">
-    <div class="modal-content">
-        <h3 id="modalTitle">Новая задача</h3>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-header">
+            <h3 id="modalTitle">Новая задача</h3>
+            <button type="button" id="closeModalBtn" class="modal-close" aria-label="Закрыть">✕</button>
+        </div>
         <form id="taskForm">
             <input type="text" id="taskTitle" placeholder="Заголовок *" required>
             <textarea id="taskDesc" placeholder="Описание (опционально)" rows="3"></textarea>

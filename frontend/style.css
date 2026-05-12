@@ -340,10 +340,14 @@ header {
     right: 0;
     bottom: 0;
     background: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+/* Иначе .modal { display } перебивает .hidden и модалка всегда на экране */
+.modal:not(.hidden) {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
 }
 
 .modal-content {
@@ -354,8 +358,34 @@ header {
     max-width: 500px;
 }
 
-.modal-content h3 {
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
     margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    margin-bottom: 0;
+}
+
+.modal-close {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #F3F4F6;
+    border-radius: 12px;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    color: #6B7280;
+}
+
+.modal-close:hover {
+    background: #E5E7EB;
+    color: #111827;
 }
 
 .modal-content input,
